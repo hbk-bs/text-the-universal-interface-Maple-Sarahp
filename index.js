@@ -30,7 +30,7 @@ let messageHistory = {
 
 // TODO: use your own val.town endpoint
 // remix: https://val.town/remix/ff6347-openai-api
-const apiEndpoint = 'https://www.val.town/x/sarahLtl/openai_api';
+const apiEndpoint = 'https://sarahLtl--a41e8176970549c583aa22a6ad3df365.web.val.run';
 if (!apiEndpoint.includes('run')) {
 	throw new Error('Please use your own val.town endpoint!!!');
 }
