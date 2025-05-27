@@ -33,7 +33,7 @@ let messageHistory = {
 			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
 
 			Der Gegner hat 100 Lebenspunkte.
-			der Spieler hat 30 Lebenspunkte.
+			Der Spieler hat 30 Lebenspunkte.
 			 response in JSON
 			`,
 		},
