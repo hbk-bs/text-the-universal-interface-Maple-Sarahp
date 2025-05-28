@@ -111,6 +111,48 @@ document.addEventListener('DOMContentLoaded', () => {
 		scrollToBottom(chatHistoryElement);
 	});
 
+	const attackBtn = document.getElementById('atc');
+	const defendBtn = document.getElementById('def');
+	const evadeBtn = document.getElementById('ev');
+
+	async function sendAction(action) {
+		messageHistory.messages.push({ role: 'user', content: action });
+		messageHistory = truncateHistory(messageHistory);
+		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+		scrollToBottom(chatHistoryElement);
+
+		const response = await fetch(apiEndpoint, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify(messageHistory),
+		});
+		if (!response.ok) {
+			const errorText = await response.text();
+			throw new Error(errorText);
+		}
+		const json = await response.json();
+		// @ts-ignore
+		messageHistory.messages.push(json.completion.choices[0].message);
+		messageHistory = truncateHistory(messageHistory);
+		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+		scrollToBottom(chatHistoryElement);
+	}
+
+	attackBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+		sendAction('angreifen würfeln');
+	});
+	defendBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+		sendAction('verteidigen würfeln');
+	});
+	evadeBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+		sendAction('ausweichen würfeln');
+	});
+
 	// LLM antwortet zuerst
 	async function llmFirstMessage() {
 		const response = await fetch(apiEndpoint, {
@@ -148,14 +190,17 @@ function scrollToBottom(conainer) {
 }
 
 function truncateHistory(h) {
-	if (!h || !h.messages || h.messages.length <= 1) {
-		return h; // No truncation needed or possible
-	}
-	const { messages } = h;
-	const [system, ...rest] = messages;
-	if (rest.length - 1 > MAX_HISTORY_LENGTH) {
-		return { messages: [system, ...rest.slice(-MAX_HISTORY_LENGTH)] };
-	} else {
-		return h;
-	}
+    if (!h || !h.messages || h.messages.length <= 1) {
+        return h;
+    }
+    const { messages, ...rest } = h;
+    const [system, ...otherMessages] = messages;
+    if (otherMessages.length > MAX_HISTORY_LENGTH) {
+        return {
+            ...rest,
+            messages: [system, ...otherMessages.slice(-MAX_HISTORY_LENGTH)],
+        };
+    } else {
+        return h;
+    }
 }
