@@ -52,3 +52,12 @@ input[type='text'] {
 button {
   height: 100%;
 }
+#atc{
+  background-color:rgb(251, 146, 146);
+}
+#def{
+  background-color:rgb(255, 238, 181) ;
+}
+#ev{
+  background-color:rgb(183, 238, 248) ;
+}

@@ -39,7 +39,7 @@ let messageHistory = {
 			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
             der spieler darf ruhig getötet werden, es soll fordern.
 
-			jeh langer der spieler die geschichte hinauszögert, desto saurer wirst du, der erzähler. 
+			jeh laenger der spieler die geschichte hinauszögert, desto saurer wirst du, der erzähler. 
 			Sagt der spieler ende, ohne zu spielen, so bist du sehr enttäuscht und sagst, dass er ein schlechter spieler ist.
 			
 			 response in JSON
@@ -127,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		const json = await response.json();
 		// @ts-ignore
 		messageHistory.messages.push(json.completion.choices[0].message);
-		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
-		scrollToBottom(chatHistoryElement);
+		//chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+		//scrollToBottom(chatHistoryElement);
 	}
 
 	llmFirstMessage();
