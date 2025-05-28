@@ -18,6 +18,7 @@ let messageHistory = {
 		{
 			role: 'system',
 			content: `
+			beginne als erstes mit einer nachricht. du bist ein weiser Zauberer und redest sehr hochgestochen.
 			du erzählst eine fantasy geschichte, in der man einen drachen oder andere gegener besiegen muss.
 			man kann drei aktionen wählen:
 			1. "angreifen" - du greifst den gegner an.
@@ -27,13 +28,20 @@ let messageHistory = {
             dabei muss man 'würfeln', um die Effektivität der Aktion zu bestimmen.
 			Man schreibt 'würfeln' hinter der Aktion und du wählst eine zufällige Zahl zwischen 1 und 6.
 
-			eine Aktion kann erfolgreich oder nicht erfolgreich sein.
+			eine Aktion kann erfolgreich oder nicht erfolgreich sein. 
+			bei nichterfolg = schaden für den spieler.
+            
+			Der Gegner hat 50 Lebenspunkte.
+			Der Spieler hat 10 Lebenspunkte.
+
 			Beispiel: 
 			Drachenfeuerangriff: Zu stark um zu verteidigen, du nimmst großen schaden.
 			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
+            der spieler darf ruhig getötet werden, es soll fordern.
 
-			Der Gegner hat 100 Lebenspunkte.
-			Der Spieler hat 20 Lebenspunkte.
+			jeh langer der spieler die geschichte hinauszögert, desto saurer wirst du, der erzähler. 
+			Sagt der spieler ende, ohne zu spielen, so bist du sehr enttäuscht und sagst, dass er ein schlechter spieler ist.
+			
 			 response in JSON
 			`,
 		},
@@ -102,6 +110,28 @@ document.addEventListener('DOMContentLoaded', () => {
 		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
 		scrollToBottom(chatHistoryElement);
 	});
+
+	// LLM antwortet zuerst
+	async function llmFirstMessage() {
+		const response = await fetch(apiEndpoint, {
+			method: 'POST',
+			headers: {
+				'content-type': 'application/json',
+			},
+			body: JSON.stringify(messageHistory),
+		});
+		if (!response.ok) {
+			const errorText = await response.text();
+			throw new Error(errorText);
+		}
+		const json = await response.json();
+		// @ts-ignore
+		messageHistory.messages.push(json.completion.choices[0].message);
+		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+		scrollToBottom(chatHistoryElement);
+	}
+
+	llmFirstMessage();
 });
 
 function addToChatHistoryElement(mhistory) {
