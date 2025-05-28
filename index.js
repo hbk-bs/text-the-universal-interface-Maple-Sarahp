@@ -190,17 +190,14 @@ function scrollToBottom(conainer) {
 }
 
 function truncateHistory(h) {
-    if (!h || !h.messages || h.messages.length <= 1) {
-        return h;
-    }
-    const { messages, ...rest } = h;
-    const [system, ...otherMessages] = messages;
-    if (otherMessages.length > MAX_HISTORY_LENGTH) {
-        return {
-            ...rest,
-            messages: [system, ...otherMessages.slice(-MAX_HISTORY_LENGTH)],
-        };
-    } else {
-        return h;
-    }
+	if (!h || !h.messages || h.messages.length <= 1) {
+		return h; // No truncation needed or possible
+	}
+	const { messages } = h;
+	const [system, ...rest] = messages;
+	if (rest.length - 1 > MAX_HISTORY_LENGTH) {
+		return { messages: [system, ...rest.slice(-MAX_HISTORY_LENGTH)] };
+	} else {
+		return h;
+	}
 }
