@@ -67,3 +67,18 @@ button {
   border-radius: 8px;
   padding: 4px 10px;
 }
+.message.assistant.highlight-assistant {
+  border-radius: 8px;
+  padding: 10px 16px;
+  margin-bottom: 8px;
+  font-size: 1.08em;
+}
+
+.action-hint {
+  margin-top: 12px;
+  color: #0288d1;
+  font-size: 0.98em;
+  background: #f0fbff;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
