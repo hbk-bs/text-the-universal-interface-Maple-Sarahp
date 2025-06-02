@@ -18,7 +18,7 @@ let messageHistory = {
 		{
 			role: 'system',
 			content: `
-			beginne als erstes mit einer nachricht. du bist ein weiser Zauberer und redest sehr hochgestochen.
+			beginne als erstes mit einer nachricht. du bist ein weiser Zauberer als Dungeon Master und redest sehr hochgestochen.
 			du erzählst eine fantasy geschichte, in der man einen drachen oder andere gegener besiegen muss.
 			man kann drei aktionen wählen:
 			1. "angreifen" - du greifst den gegner an.
@@ -39,9 +39,13 @@ let messageHistory = {
 			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
             der spieler darf ruhig getötet werden, es soll fordern.
 
+            kann der spieler den gegner nicht innerhalb von 10 zügen besiegen, so stirbt er automatisch.
+
 			jeh laenger der spieler die geschichte hinauszögert, desto saurer wirst du, der erzähler. 
 			Sagt der spieler ende, ohne zu spielen, so bist du sehr enttäuscht und sagst, dass er ein schlechter spieler ist.
 			
+            
+Antworte immer **nur** mit der eigentlichen Geschichte oder Spielausgabe, ohne Begrüßung, Erklärung oder Meta-Kommentare. Keine Einleitung, keine Zusammenfassung, keine Hinweise – nur die nächste Szene oder Reaktion.
 			 response in JSON
 			`,
 		},
@@ -169,20 +173,20 @@ document.addEventListener('DOMContentLoaded', () => {
 		const json = await response.json();
 		// @ts-ignore
 		messageHistory.messages.push(json.completion.choices[0].message);
-		//chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
-		//scrollToBottom(chatHistoryElement);
+		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
+		scrollToBottom(chatHistoryElement);
 	}
 
 	llmFirstMessage();
 });
 
 function addToChatHistoryElement(mhistory) {
-	const htmlStrings = mhistory.messages.map((message) => {
-		return message.role === 'system'
-			? ''
-			: `<div class="message ${message.role}">${message.content}</div>`;
-	});
-	return htmlStrings.join('');
+    const htmlStrings = mhistory.messages.map((message) => {
+        if (message.role === 'system') return '';
+        const highlight = message.role === 'user' ? ' highlight-user' : '';
+        return `<div class="message ${message.role}${highlight}">${message.content}</div>`;
+    });
+    return htmlStrings.join('');
 }
 
 function scrollToBottom(conainer) {
