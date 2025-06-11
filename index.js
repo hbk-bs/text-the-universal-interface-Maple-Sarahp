@@ -28,6 +28,8 @@ let messageHistory = {
             dabei muss man 'würfeln', um die Effektivität der Aktion zu bestimmen.
 			Man schreibt 'würfeln' hinter der Aktion und du wählst eine zufällige Zahl zwischen 1 und 6.
 
+            The Beast switches between strong and weak attacks, give hint on the following attack.
+
 			eine Aktion kann erfolgreich oder nicht erfolgreich sein. 
 			bei nichterfolg = schaden für den spieler.
             
@@ -46,8 +48,26 @@ let messageHistory = {
 			
 			wenn der spieler zu länger als 3 sekunden für eine antwort braucht, wird er gegrillt. und du spamst ihn mit nachrichten zu.
             
-Antworte immer **nur** mit der eigentlichen Geschichte oder Spielausgabe, ohne Begrüßung, Erklärung oder Meta-Kommentare. Keine Einleitung, keine Zusammenfassung, keine Hinweise – nur die nächste Szene oder Reaktion.
+            
 			 response in JSON
+			 your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate line breaks and indentation for readability.
+			 example of expected json output: 
+			 
+			 \`\`\`json
+            {
+              "title": "Slay the Dragon or die trying"
+
+              "backstory": "You are a brave adventurer in a fantasy world, tasked with slaying a fearsome dragon that has been terrorizing the kingdom. You must choose your actions wisely to survive and defeat the beast.",
+                            
+			  "beast health": "40",
+             
+			  "player health": "10",
+              
+			  "hint": "der drache wird einen starken angriff machen. ",
+              
+            }
+            \`\`\`
+
 			`,
 		},
 	],
@@ -116,9 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		scrollToBottom(chatHistoryElement);
 	});
 
-	const attackBtn = document.getElementById('atc');
-	const defendBtn = document.getElementById('def');
-	const evadeBtn = document.getElementById('ev');
+	const attackBtn = document.getElementById('attack');
+	const defendBtn = document.getElementById('defend');
+	const evadeBtn = document.getElementById('evade');
 
 	async function sendAction(action) {
 			if (!chatHistoryElement) {
@@ -153,15 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 	attackBtn.addEventListener('click', (e) => {
 		e.preventDefault();
-		sendAction('angreifen würfeln');
+		sendAction('attack the beast');
 	});
 	defendBtn.addEventListener('click', (e) => {
 		e.preventDefault();
-		sendAction('verteidigen würfeln');
+		sendAction('Ill defend myself');
 	});
 	evadeBtn.addEventListener('click', (e) => {
 		e.preventDefault();
-		sendAction('ausweichen würfeln');
+		sendAction('I will evade the attack');
 	});
 
 	// LLM antwortet zuerst

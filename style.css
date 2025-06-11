@@ -52,14 +52,20 @@ input[type='text'] {
 button {
   height: 100%;
 }
-#atc{
+#attack{
   background-color:rgb(251, 146, 146);
+  border-radius: 8px;
+  padding: 4px 10px;
 }
-#def{
+#defend{
   background-color:rgb(255, 238, 181) ;
+  border-radius: 8px;
+  padding: 4px 10px;
 }
-#ev{
+#evade{
   background-color:rgb(183, 238, 248) ;
+  border-radius: 8px;
+  padding: 4px 10px;
 }
 .message.user.highlight-user {
   background: #ffe066;
