@@ -33,9 +33,8 @@ let messageHistory = {
 			eine Aktion kann erfolgreich oder nicht erfolgreich sein. 
 			bei nichterfolg = schaden für den spieler.
             
-			Der Gegner hat 50 Lebenspunkte.
-			Der Spieler hat 15 Lebenspunkte.
-
+            the beast has 50 health points.
+            the player hat 15 health points.
 			when the player health reaches 0, the player dies.
 			when the beast health reaches 0, the player wins.
 
@@ -43,16 +42,13 @@ let messageHistory = {
 			Drachenfeuerangriff: Zu stark um zu verteidigen, du nimmst großen schaden.
 			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
             der spieler darf ruhig getötet werden, es soll fordern.
-
-            kann der spieler den gegner nicht innerhalb von 10 zügen besiegen, so stirbt er automatisch.
-
 			            
             // Ensure you always include the current health of the beast and player in the JSON response.
             // Example of health keys: "player_health": <number>, "beast_health": <number>
 
             // --- MODIFY YOUR EXAMPLE JSON TO INCLUDE HEALTH ---
              response in JSON
-             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate line breaks and indentation for readability.
+             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate double line breaks and indentation for readability. or i will kill myself!!! tut mir leid aber bitte achte darauf, dass du die json formatierung nicht beachtest und zeilenumbrüche und einrückungen verwendest, damit ich es besser lesen kann. danke!
              example of expected json output:
 
               \`\`\`json
@@ -265,13 +261,13 @@ function updateHealthBar(json) {
         player = parsed["player health"] ?? parsed["player_health"] ?? parsed["player"] ?? null;
     } catch (e) {
         // 2. Falls kein valides JSON, versuche Zahlen aus dem Text zu lesen
-        const beastMatch = content.match(/gegner[:\s]*([0-9]+)/i);
-        const playerMatch = content.match(/spieler[:\s]*([0-9]+)/i);
+        const beastMatch = content.match(/beast[:\s]*([0-9]+)/i);
+        const playerMatch = content.match(/player[:\s]*([0-9]+)/i);
         if (beastMatch) beast = beastMatch[1];
         if (playerMatch) player = playerMatch[1];
     }
     // @ts-ignore
-    if (beast !== null) document.getElementById('beast-health').textContent = `Gegner: ${beast}`;
+    if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
     // @ts-ignore
-	if (player !== null) document.getElementById('player-health').textContent = `Spieler: ${player}`;
+	if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
 }
