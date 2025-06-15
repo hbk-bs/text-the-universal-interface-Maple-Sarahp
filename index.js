@@ -18,29 +18,28 @@ let messageHistory = {
 		{
 			role: 'system',
 			content: `
-			beginne als erstes mit einer nachricht. du bist ein weiser Zauberer als Dungeon Master und redest sehr hochgestochen.
-			du erzählst eine fantasy geschichte, in der man einen drachen oder andere gegener besiegen muss.
-			man kann drei aktionen wählen:
-			1. "angreifen" - du greifst den gegner an.
-			2. "verteidigen" - du wehrst den angriff so gut es geht ab.
-			3. "ausweichen" - du   weichst so gut es geht aus.
+			you start the adventure with a message. you are a prestigous wizard and Dungeon Master. You always talk very pompously and with a lot of flair.
+			you tell of an adventure in which the player must kill a ferochious beast.
+			the player can choose to act between three actions:
+			1. "attack" - you attack the beast with a simple attack.
+			2. "defend" - you defend yourself as good as you can.
+			3. "fireball" - a powerful attack that can be used ONCE per fight. If you try again you take small damage and fireball is not available anymore.
 
-            dabei muss man 'würfeln', um die Effektivität der Aktion zu bestimmen.
-			Man schreibt 'würfeln' hinter der Aktion und du wählst eine zufällige Zahl zwischen 1 und 6.
+            to each action you throw a dice to estimate the effectiveness of the action.
+            you choose a random number between 1 and 20 to simulate the dice roll.
 
-            The Beast switches between strong and weak attacks, give hint on the following attack.
+            The Beast switches between strong and weak attacks also differing in the damage, give a hint on the following attack so the player can prepare.
 
-			eine Aktion kann erfolgreich oder nicht erfolgreich sein. 
-			bei nichterfolg = schaden für den spieler.
+			an action can be successful or not. 
+			a bad roll equals more damage for the player.
+			good rolls equal more damage to the beast.
             
             the beast has 50 health points.
             the player hat 15 health points.
-			when the player health reaches 0, the player dies.
-			when the beast health reaches 0, the player wins.
+			when the player health reaches 0, the player dies and the any action is not possible anymore.
+			when the beast health reaches 0, the player wins and you gratulate the player.
 
-			Beispiel: 
-			Drachenfeuerangriff: Zu stark um zu verteidigen, du nimmst großen schaden.
-			Angriff würfeln = Angriff 6 = Angriff erfolgreich, du triffst den Drachen.
+			
             der spieler darf ruhig getötet werden, es soll fordern.
 			            
             // Ensure you always include the current health of the beast and player in the JSON response.
@@ -55,7 +54,7 @@ let messageHistory = {
             {
               "title": "Slay the Dragon or die trying",
               "story_message": "Als du deine Klinge schwingst, zischt der Drache eine Feuerwalze. Du versuchst auszuweichen, würfelst eine 3! Der Drachenangriff ist zu schnell und du erleidest Schaden.",
-              "hint": "Der Drache bereitet einen schwachen Klauenangriff vor.",
+              "hint": "the beast will summon a strong attack.",
               "player_health": 8,
               "beast_health": 45
             }
@@ -176,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	fireballBtn.addEventListener('click', (e) => {
 		e.preventDefault();
 		sendAction('FIREBALL!');
+		fireballBtn.classList.add('used');
 	});
 
 	// LLM antwortet zuerst
@@ -249,25 +249,25 @@ function truncateHistory(h) {
 }
 
 function updateHealthBar(json) {
-    if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
-    let msg = json.completion.choices[0].message;
-    let content = msg.content;
-    let beast = null, player = null;
+	if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
+	let msg = json.completion.choices[0].message;
+	let content = msg.content;
+	let beast = null, player = null;
 
-    // 1. Versuche JSON zu parsen
-    try {
-        let parsed = typeof content === "string" ? JSON.parse(content) : content;
-        beast = parsed["beast health"] ?? parsed["beast_health"] ?? parsed["beast"] ?? null;
-        player = parsed["player health"] ?? parsed["player_health"] ?? parsed["player"] ?? null;
-    } catch (e) {
-        // 2. Falls kein valides JSON, versuche Zahlen aus dem Text zu lesen
-        const beastMatch = content.match(/beast[:\s]*([0-9]+)/i);
-        const playerMatch = content.match(/player[:\s]*([0-9]+)/i);
-        if (beastMatch) beast = beastMatch[1];
-        if (playerMatch) player = playerMatch[1];
-    }
-    // @ts-ignore
-    if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
-    // @ts-ignore
+	// 1. Versuche JSON zu parsen
+	try {
+		let parsed = typeof content === "string" ? JSON.parse(content) : content;
+		beast = parsed["beast health"] ?? parsed["beast_health"] ?? parsed["beast"] ?? null;
+		player = parsed["player health"] ?? parsed["player_health"] ?? parsed["player"] ?? null;
+	} catch (e) {
+		// 2. Falls kein valides JSON, versuche Zahlen aus dem Text zu lesen
+		const beastMatch = content.match(/beast[:\s]*([0-9]+)/i);
+		const playerMatch = content.match(/player[:\s]*([0-9]+)/i);
+		if (beastMatch) beast = beastMatch[1];
+		if (playerMatch) player = playerMatch[1];
+	}
+	// @ts-ignore
+	if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
+	// @ts-ignore
 	if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
 }
