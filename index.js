@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	const attackBtn = document.getElementById('attack');
 	const defendBtn = document.getElementById('defend');
-	const evadeBtn = document.getElementById('evade');
+	const fireballBtn = document.getElementById('fireball');
 
 	async function sendAction(action) {
 		if (!chatHistoryElement) {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		scrollToBottom(chatHistoryElement);
 	}
 
-	if (attackBtn === null || defendBtn === null || evadeBtn === null) {
+	if (attackBtn === null || defendBtn === null || fireballBtn === null) {
 		throw new Error('Could not find action buttons');
 	}
 	attackBtn.addEventListener('click', (e) => {
@@ -173,9 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		e.preventDefault();
 		sendAction('Ill defend myself');
 	});
-	evadeBtn.addEventListener('click', (e) => {
+	fireballBtn.addEventListener('click', (e) => {
 		e.preventDefault();
-		sendAction('I will evade the attack');
+		sendAction('FIREBALL!');
 	});
 
 	// LLM antwortet zuerst
