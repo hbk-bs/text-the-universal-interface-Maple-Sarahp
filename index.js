@@ -1,4 +1,4 @@
-//@ts-check
+// @ts-check
 // [x]. get the content from the input element
 // [x]. send the content to the val town endpoint using fetch POST request
 // [x]. await the response
@@ -58,10 +58,6 @@ let messageHistory = {
               "title": "Slay the Dragon or die trying"
 
               "backstory": "You are a brave adventurer in a fantasy world, tasked with slaying a fearsome dragon that has been terrorizing the kingdom. You must choose your actions wisely to survive and defeat the beast.",
-                            
-			  "beast health": "40",
-             
-			  "player health": "10",
               
 			  "hint": "der drache wird einen starken angriff machen. ",
               
@@ -141,9 +137,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	const evadeBtn = document.getElementById('evade');
 
 	async function sendAction(action) {
-			if (!chatHistoryElement) {
-		throw new Error('Could not find element .chat-history');
-	}
+		if (!chatHistoryElement) {
+			throw new Error('Could not find element .chat-history');
+		}
 		messageHistory.messages.push({ role: 'user', content: action });
 		messageHistory = truncateHistory(messageHistory);
 		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
@@ -168,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		scrollToBottom(chatHistoryElement);
 	}
 
-	if(attackBtn === null || defendBtn === null || evadeBtn === null) {
+	if (attackBtn === null || defendBtn === null || evadeBtn === null) {
 		throw new Error('Could not find action buttons');
 	}
 	attackBtn.addEventListener('click', (e) => {
@@ -187,9 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	// LLM antwortet zuerst
 	async function llmFirstMessage() {
 
-			if (!chatHistoryElement) {
-		throw new Error('Could not find element .chat-history');
-	}
+		if (!chatHistoryElement) {
+			throw new Error('Could not find element .chat-history');
+		}
 		const response = await fetch(apiEndpoint, {
 			method: 'POST',
 			headers: {
@@ -212,22 +208,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function addToChatHistoryElement(mhistory) {
-    const actionHint = `
+	const actionHint = `
         <div class="action-hint">
             <hr>
             <b>Aktionen:</b> angreifen würfeln &nbsp;|&nbsp; verteidigen würfeln &nbsp;|&nbsp; ausweichen würfeln
         </div>
     `;
-    const htmlStrings = mhistory.messages.map((message, idx, arr) => {
-        if (message.role === 'system') return '';
-        if (message.role === 'assistant') {
-            // LLM-Antwort hervorheben und Aktionshinweis anhängen
-            return `<div class="message assistant highlight-assistant">${message.content}${actionHint}</div>`;
-        }
-        const highlight = message.role === 'user' ? ' highlight-user' : '';
-        return `<div class="message ${message.role}${highlight}">${message.content}</div>`;
-    });
-    return htmlStrings.join('');
+	const htmlStrings = mhistory.messages.map((message, idx, arr) => {
+		if (message.role === 'system') return '';
+		if (message.role === 'assistant') {
+			let content = message.content;
+			try {
+				const parsed = JSON.parse(content);
+				content = parsed.backstory || parsed.scene || content;
+			} catch (e) {
+				// kein JSON, alles ok
+			}
+			return `<div class="message assistant highlight-assistant">${content}${actionHint}</div>`;
+		}
+		const highlight = message.role === 'user' ? ' highlight-user' : '';
+		return `<div class="message ${message.role}${highlight}">${message.content}</div>`;
+	});
+	return htmlStrings.join('');
 }
 
 function scrollToBottom(conainer) {
@@ -245,4 +247,26 @@ function truncateHistory(h) {
 	} else {
 		return h;
 	}
+}
+
+function updateHealthBar(json) {
+
+	// Versuche, Health aus der letzten LLM-Antwort zu lesen
+	if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
+	let msg = json.completion.choices[0].message;
+	let content = msg.content;
+	let beast = null, player = null;
+	try {
+		// Versuche, JSON zu parsen (falls LLM korrekt antwortet)
+		let parsed = typeof content === "string" ? JSON.parse(content) : content;
+		beast = parsed["beast health"];
+		player = parsed["player health"];
+	} catch (e) {
+		// Falls kein valides JSON, ignoriere
+	}
+    //@ts-ignore
+	if (beast !== null) document.getElementById('beast-health').textContent = `Gegner: ${beast}`;
+	//@ts-ignore
+	if (player !== null) document.getElementById('player-health').textContent = `Spieler: ${player}`;
+
 }

@@ -88,3 +88,12 @@ button {
   border-radius: 6px;
   padding: 6px 10px;
 }
+#health-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 500px;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
