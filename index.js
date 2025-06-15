@@ -34,7 +34,10 @@ let messageHistory = {
 			bei nichterfolg = schaden für den spieler.
             
 			Der Gegner hat 50 Lebenspunkte.
-			Der Spieler hat 10 Lebenspunkte.
+			Der Spieler hat 15 Lebenspunkte.
+
+			when the player health reaches 0, the player dies.
+			when the beast health reaches 0, the player wins.
 
 			Beispiel: 
 			Drachenfeuerangriff: Zu stark um zu verteidigen, du nimmst großen schaden.
@@ -43,28 +46,26 @@ let messageHistory = {
 
             kann der spieler den gegner nicht innerhalb von 10 zügen besiegen, so stirbt er automatisch.
 
-			jeh laenger der spieler die geschichte hinauszögert, desto saurer wirst du, der erzähler. 
-			Sagt der spieler ende, ohne zu spielen, so bist du sehr enttäuscht und sagst, dass er ein schlechter spieler ist.
-			
-			wenn der spieler zu länger als 3 sekunden für eine antwort braucht, wird er gegrillt. und du spamst ihn mit nachrichten zu.
-            
-            
-			 response in JSON
-			 your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate line breaks and indentation for readability.
-			 example of expected json output: 
-			 
-			 \`\`\`json
-            {
-              "title": "Slay the Dragon or die trying"
+			            
+            // Ensure you always include the current health of the beast and player in the JSON response.
+            // Example of health keys: "player_health": <number>, "beast_health": <number>
 
-              "backstory": "You are a brave adventurer in a fantasy world, tasked with slaying a fearsome dragon that has been terrorizing the kingdom. You must choose your actions wisely to survive and defeat the beast.",
-              
-			  "hint": "der drache wird einen starken angriff machen. ",
-              
+            // --- MODIFY YOUR EXAMPLE JSON TO INCLUDE HEALTH ---
+             response in JSON
+             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate line breaks and indentation for readability.
+             example of expected json output:
+
+              \`\`\`json
+            {
+              "title": "Slay the Dragon or die trying",
+              "story_message": "Als du deine Klinge schwingst, zischt der Drache eine Feuerwalze. Du versuchst auszuweichen, würfelst eine 3! Der Drachenangriff ist zu schnell und du erleidest Schaden.",
+              "hint": "Der Drache bereitet einen schwachen Klauenangriff vor.",
+              "player_health": 8,
+              "beast_health": 45
             }
             \`\`\`
 
-			`,
+            `,
 		},
 	],
 };
@@ -126,8 +127,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		console.log(json);
 		// @ts-ignore
 		messageHistory.messages.push(json.completion.choices[0].message);
+		updateHealthBar(json); // <--- HIER AUFRUFEN!
 		messageHistory = truncateHistory(messageHistory);
-
 		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
 		scrollToBottom(chatHistoryElement);
 	});
@@ -159,6 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const json = await response.json();
 		// @ts-ignore
 		messageHistory.messages.push(json.completion.choices[0].message);
+		updateHealthBar(json); // <--- HIER AUFRUFEN!
 		messageHistory = truncateHistory(messageHistory);
 		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
 		scrollToBottom(chatHistoryElement);
@@ -200,6 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const json = await response.json();
 		// @ts-ignore
 		messageHistory.messages.push(json.completion.choices[0].message);
+		updateHealthBar(json); // <--- HIER AUFRUFEN!
 		chatHistoryElement.innerHTML = addToChatHistoryElement(messageHistory);
 		scrollToBottom(chatHistoryElement);
 	}
@@ -250,23 +253,25 @@ function truncateHistory(h) {
 }
 
 function updateHealthBar(json) {
+    if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
+    let msg = json.completion.choices[0].message;
+    let content = msg.content;
+    let beast = null, player = null;
 
-	// Versuche, Health aus der letzten LLM-Antwort zu lesen
-	if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
-	let msg = json.completion.choices[0].message;
-	let content = msg.content;
-	let beast = null, player = null;
-	try {
-		// Versuche, JSON zu parsen (falls LLM korrekt antwortet)
-		let parsed = typeof content === "string" ? JSON.parse(content) : content;
-		beast = parsed["beast health"];
-		player = parsed["player health"];
-	} catch (e) {
-		// Falls kein valides JSON, ignoriere
-	}
-    //@ts-ignore
-	if (beast !== null) document.getElementById('beast-health').textContent = `Gegner: ${beast}`;
-	//@ts-ignore
+    // 1. Versuche JSON zu parsen
+    try {
+        let parsed = typeof content === "string" ? JSON.parse(content) : content;
+        beast = parsed["beast health"] ?? parsed["beast_health"] ?? parsed["beast"] ?? null;
+        player = parsed["player health"] ?? parsed["player_health"] ?? parsed["player"] ?? null;
+    } catch (e) {
+        // 2. Falls kein valides JSON, versuche Zahlen aus dem Text zu lesen
+        const beastMatch = content.match(/gegner[:\s]*([0-9]+)/i);
+        const playerMatch = content.match(/spieler[:\s]*([0-9]+)/i);
+        if (beastMatch) beast = beastMatch[1];
+        if (playerMatch) player = playerMatch[1];
+    }
+    // @ts-ignore
+    if (beast !== null) document.getElementById('beast-health').textContent = `Gegner: ${beast}`;
+    // @ts-ignore
 	if (player !== null) document.getElementById('player-health').textContent = `Spieler: ${player}`;
-
 }
