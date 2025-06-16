@@ -47,13 +47,14 @@ let messageHistory = {
 			
             the game should challange the player, but not be too hard.
 			            
+            // Ensure you always include the current health of the beast and player in the JSON response.
             // Example of health keys: "player_health": <number>, "beast_health": <number>
 
             // --- MODIFY YOUR EXAMPLE JSON TO INCLUDE HEALTH ---
              response in JSON  
 		     
 
-             your response should be a single JSON object structured as follows, with each key representing a category. Ensure that json is formatted with double line breaks. or i will kill myself!!! 
+             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate double line breaks and indentation for readability. or i will kill myself!!! tut mir leid aber bitte achte darauf, dass du die json formatierung nicht beachtest und zeilenumbrüche und einrückungen verwendest, damit ich es besser lesen kann. danke!
              example of expected json output:
               \`\`\`json
             {
@@ -63,9 +64,9 @@ let messageHistory = {
 
               "hint": "the beast will summon a strong attack.",
               
-			  "player_health": 8
+			  "player health": 8,
 			  
-              "beast_health": 45
+              "beast health": 45,
             }
             \`\`\`
              
@@ -259,22 +260,20 @@ function truncateHistory(h) {
 
 function updateHealthBar(json) {
     if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
-    let msg = json.completion.choices[0].message;
-    let content = msg.content;
+    let content = json.completion.choices[0].message.content;
+    console.log("LLM-Output für Healthbar:", content);
 
     let beast = null, player = null;
 
-    // Extrahiere Zeilen im Format key: value,
-    const lines = content.split(/\n+/);
-    for (const line of lines) {
-        const match = line.match(/^\s*(player[_ ]?health|beast[_ ]?health)\s*:\s*(\d+)/i);
-        if (match) {
-            if (match[1].toLowerCase().includes('player')) player = match[2];
-            if (match[1].toLowerCase().includes('beast')) beast = match[2];
-        }
-    }
-	// @ts-ignore
+    // Suche nach player health oder player_health oder player: ...
+    const playerMatch = content.match(/player[\s_]?health\s*:\s*(\d+)/i) || content.match(/player\s*:\s*(\d+)/i);
+    const beastMatch = content.match(/beast[\s_]?health\s*:\s*(\d+)/i) || content.match(/beast\s*:\s*(\d+)/i);
+
+    if (playerMatch) player = playerMatch[1];
+    if (beastMatch) beast = beastMatch[1];
+// @ts-ignore
     if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
-    // @ts-ignore
-	if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
+   // @ts-ignore
+    if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
 }
+
