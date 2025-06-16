@@ -71,7 +71,7 @@ main {
   flex-direction: column;
   gap: 16px;
   overflow-y: auto;
-  padding: 20px;
+  padding: 10px;
   margin-top: -15px;
   margin-bottom: -15px;
   border: 5px solid var(--text-highlight);
@@ -148,7 +148,7 @@ button:hover{
   align-items: center;
 
   font-size: 1.3em;
-  padding: 5px 25px;
+  padding: 5px 15px;
 
   font-weight: bold;
   color: var(--text);
@@ -161,23 +161,38 @@ button:hover{
 .side.buttons {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  margin-top: 400px;
-  margin-left: 20px;
-  position: static;
+  gap: 36px;
+  align-items: center;
+  margin-top: 350px;
+  padding-left: 20px;
+}
 
-  img {
-    width: 80px;
-    height: auto;
-    max-width: 100%;
-    margin: 0 auto;
-  }
- button{
+.side.buttons button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: none;
   border: none;
- }
-  
+  padding: 0;
 }
+
+.side.buttons button img {
+  height: 100px;
+  width: 100px;;
+  display: block;
+  margin: 0 auto;
+}
+
+.side.buttons button span {
+  display: block;
+  margin-top: 6px;
+  text-align: center;
+  width: 100%;
+  font-size: 1em;
+  font-weight: bold;
+  color: var(--text);
+}
+
 .attack-label{
   font-size: 1em;
   margin-top: 4px;
@@ -195,21 +210,22 @@ button:hover{
 }
 
 #try-again {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: none;
   border: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  padding-right: 10px;
+  gap: 2px;
 }
 
 #try-again img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
+  width: 130px;
+  height: 130px;
+  object-fit:cover;
 }
 
 #try-again .try-again-label {
