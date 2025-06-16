@@ -1,10 +1,11 @@
 :root {
-  --background: #ffffff;
-  --chat-bg: #e6e6e6;
-  --highlight: #fbd84d;
+  --background: #4140955c;
+  --chat-bg: #93a8d4;
+  --highlight: #fde16f;
   --rev-highlight: #4b2501;
   --text: #3e3e3e;
-  --atack:#f293aaa6;
+  --text-highlight:#d7dbff;
+  --atack: #f293aaa6;
   --defend: #979797ba;
   --fireball: #feae83;
   --fireball-used: #ed2525;
@@ -22,14 +23,14 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
-  
+
   height: 100%;
   font-family: system-ui, sans-serif;
   font-weight: normal;
 
   margin: 0;
   padding: 0;
-  
+
   background-color: var(--background);
   background-image: url('./bg3.jpg');
   background-size: cover;
@@ -39,10 +40,10 @@ body {
 }
 
 main {
-  flex: 1 1 700px;
+  flex: 1 1 600px;
   min-width: 0;
   width: 700px;
-  height: 100%;
+  height: 90%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -51,8 +52,9 @@ main {
 
   img {
     width: 100%;
+    scale: 1.2;
     height: auto;
-    max-width: 800px;
+    max-width: 600px;
     margin: 0 auto;
     margin-top: 3em;
   }
@@ -70,7 +72,7 @@ main {
   overflow-y: auto;
   padding: 20px;
   border-radius: 8px;
-  
+
 }
 
 .chat-history>.message.assistant {
@@ -86,34 +88,35 @@ form {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
 }
 
 input[type='text'] {
+  padding: 10px;
   flex-grow: 1;
-  height: 32px;
+  height: 30px;
+  border-radius: 0px 0px 0px 8px;
 }
 
 button {
   height: 100%;
+  border-radius: 0px 0px 8px 0px;
+  padding: 2px;
 }
 
 #attack {
-  background-color: var(--atack);
-  border-radius: 8px;
-  padding: 20px 10px;
+  background: none;
+  border: none;
 }
 
 #defend {
-  background-color: var(--defend);
-  border-radius: 8px;
-  padding: 20px 10px;
+  background: none;
+  border: none;
 }
 
 #fireball {
-  background-color: var(--fireball);
-  border-radius: 8px;
-  padding: 20px 10px;
+  background: none;
+  border: none;
 }
 
 #fireball.used {
@@ -137,10 +140,10 @@ button {
 
 .action-hint {
   margin-top: 12px;
-  color: var(--highlight);
+  color: var(--text-highlight);
   font-size: 0.98em;
   background: var(--background);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 6px 10px;
 }
 
@@ -149,7 +152,7 @@ button {
   justify-content: space-between;
   align-items: center;
 
-  font-size: 1.5em;
+  font-size: 1.3em;
   margin-bottom: 10px;
   padding: 5px 25px;
 
@@ -157,7 +160,7 @@ button {
   color: var(--text);
 
   background-color: var(--highlight);
-  border-radius: 6px;
+  border-radius: 8px 8px 0px 0px;
   box-shadow: var(--rev-highlight) 0px 0px 20px 0px inset, var(--rev-highlight) 0px 0px 0px 0px;
 }
 
@@ -165,8 +168,30 @@ button {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 550px;
+  margin-top: 450px;
   margin-left: 20px;
-  position:sticky;
-  
+  position: static;
+
+  img {
+    width: 80px;
+    height: auto;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  #attack:hover {
+
+    cursor: pointer;
+    transform: scale(1.1);
+  }
+
+  #defend:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
+
+  #fireball:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
 }
