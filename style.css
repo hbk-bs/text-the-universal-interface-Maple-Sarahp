@@ -178,7 +178,13 @@ button:hover{
  }
   
 }
-
+.attack-label{
+  font-size: 1em;
+  margin-top: 4px;
+  color: var(--text);
+  font-weight: bold;
+  text-align: center;
+}
 .try-again-bar {
   display: flex;
   flex-direction: column;
