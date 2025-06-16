@@ -102,21 +102,13 @@ button {
   height: 100%;
   border-radius: 0px 0px 8px 0px;
   padding: 2px;
+  
 }
+button:hover{
+  cursor: pointer;
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out;
 
-#attack {
-  background: none;
-  border: none;
-}
-
-#defend {
-  background: none;
-  border: none;
-}
-
-#fireball {
-  background: none;
-  border: none;
 }
 
 #fireball.used {
@@ -168,7 +160,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 450px;
+  margin-top: 290px;
   margin-left: 20px;
   position: static;
 
@@ -178,20 +170,26 @@ button {
     max-width: 100%;
     margin: 0 auto;
   }
+ button{
+  background: none;
+  border: none;
+ }
+  
+}
 
-  #attack:hover {
-
-    cursor: pointer;
-    transform: scale(1.1);
-  }
-
-  #defend:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
-
-  #fireball:hover {
-    transform: scale(1.1);
-    cursor: pointer;
-  }
+#try-again {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 4em;
+  align-self: center;
+  padding: 3px;
+}
+#try-again .try-again-label {
+  display: block;
+  font-size: 0.9em;
+  color: var(--text);
+  margin-bottom: 4px;
+  text-align: center;
+  font-weight:lighter;
+  letter-spacing: 0.3px;
 }

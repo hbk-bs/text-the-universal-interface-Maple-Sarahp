@@ -17,8 +17,9 @@ let messageHistory = {
 	messages: [
 		{
 			role: 'system',
-			content: `
-			you start the adventure with a message. you are a prestigous wizard and Dungeon Master. You always talk very pompously and with a lot of flair.
+			content: 
+			`
+			you start the adventure with a message. you are a prestigous but sarcastic wizard and Dungeon Master. You always talk very pompously and with a lot of flair.
 			you tell of an adventure in which the player must kill a ferochious beast.
 			the player can choose to act between three actions:
 			1. "attack" - you attack the beast with a simple attack.
@@ -33,6 +34,10 @@ let messageHistory = {
 			an action can be successful or not. 
 			a bad roll equals more damage for the player.
 			good rolls equal more damage to the beast.
+
+            if the player does not choose one of the three actions, the beast attacks with a strong attack.
+
+			when the player sends specifically the sentence: 'knock knock' the beast will kill him instantly with a smash.
             
             the beast has 50 health points.
             the player hat 15 health points.
@@ -40,26 +45,30 @@ let messageHistory = {
 			when the beast health reaches 0, the player wins and you gratulate the player.
 
 			
-            der spieler darf ruhig getötet werden, es soll fordern.
+            the game should challange the player, but not be too hard.
 			            
-            // Ensure you always include the current health of the beast and player in the JSON response.
             // Example of health keys: "player_health": <number>, "beast_health": <number>
 
             // --- MODIFY YOUR EXAMPLE JSON TO INCLUDE HEALTH ---
-             response in JSON
-             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate double line breaks and indentation for readability. or i will kill myself!!! tut mir leid aber bitte achte darauf, dass du die json formatierung nicht beachtest und zeilenumbrüche und einrückungen verwendest, damit ich es besser lesen kann. danke!
-             example of expected json output:
+             response in JSON  
+		     
 
+             your response should be a single JSON object structured as follows, with each key representing a category. Ensure that json is formatted with double line breaks. or i will kill myself!!! 
+             example of expected json output:
               \`\`\`json
             {
-              "title": "Slay the Dragon or die trying",
-              "story_message": "Als du deine Klinge schwingst, zischt der Drache eine Feuerwalze. Du versuchst auszuweichen, würfelst eine 3! Der Drachenangriff ist zu schnell und du erleidest Schaden.",
+              "title": "Slay the Dragon or die trying"
+
+              "story_message": "Als du deine Klinge schwingst, zischt der Drache eine Feuerwalze. Du versuchst auszuweichen, würfelst eine 3! Der Drachenangriff ist zu schnell und du erleidest Schaden."
+
               "hint": "the beast will summon a strong attack.",
-              "player_health": 8,
+              
+			  "player_health": 8
+			  
               "beast_health": 45
             }
             \`\`\`
-
+             
             `,
 		},
 	],
@@ -249,25 +258,23 @@ function truncateHistory(h) {
 }
 
 function updateHealthBar(json) {
-	if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
-	let msg = json.completion.choices[0].message;
-	let content = msg.content;
-	let beast = null, player = null;
+    if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
+    let msg = json.completion.choices[0].message;
+    let content = msg.content;
 
-	// 1. Versuche JSON zu parsen
-	try {
-		let parsed = typeof content === "string" ? JSON.parse(content) : content;
-		beast = parsed["beast health"] ?? parsed["beast_health"] ?? parsed["beast"] ?? null;
-		player = parsed["player health"] ?? parsed["player_health"] ?? parsed["player"] ?? null;
-	} catch (e) {
-		// 2. Falls kein valides JSON, versuche Zahlen aus dem Text zu lesen
-		const beastMatch = content.match(/beast[:\s]*([0-9]+)/i);
-		const playerMatch = content.match(/player[:\s]*([0-9]+)/i);
-		if (beastMatch) beast = beastMatch[1];
-		if (playerMatch) player = playerMatch[1];
-	}
+    let beast = null, player = null;
+
+    // Extrahiere Zeilen im Format key: value,
+    const lines = content.split(/\n+/);
+    for (const line of lines) {
+        const match = line.match(/^\s*(player[_ ]?health|beast[_ ]?health)\s*:\s*(\d+)/i);
+        if (match) {
+            if (match[1].toLowerCase().includes('player')) player = match[2];
+            if (match[1].toLowerCase().includes('beast')) beast = match[2];
+        }
+    }
 	// @ts-ignore
-	if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
-	// @ts-ignore
+    if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
+    // @ts-ignore
 	if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
 }
