@@ -1,5 +1,5 @@
 :root {
-  --background: #023dd14b;
+  --background: #777777da;
   --chat-bg: #fceea5;
   --highlight: #ffe066;
   --text: #1c205b;
@@ -20,7 +20,13 @@ body {
   height: 100%;
   font-family: system-ui, sans-serif;
   font-weight: normal;
-  background-color: var(--background);
+  
+
+  background-image: url('./bg1.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
 }
 
 main {
@@ -37,6 +43,7 @@ main {
     height: auto;
     max-width: 800px;
     margin: 0 auto;
+    margin-top: 1.5em;
   }
 }
 
