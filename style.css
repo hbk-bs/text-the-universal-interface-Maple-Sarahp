@@ -1,8 +1,9 @@
 :root {
-  --background: #efefefe0;
-  --chat-bg: #fceea5;
-  --highlight: #ffe066;
-  --text: #1c205b;
+  --background: #ffffff;
+  --chat-bg: #e6e6e6;
+  --highlight: #fbd84d;
+  --rev-highlight: #4b2501;
+  --text: #3e3e3e;
   --atack:#f293aaa6;
   --defend: #979797ba;
   --fireball: #feae83;
@@ -17,6 +18,11 @@
 
 html,
 body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  
   height: 100%;
   font-family: system-ui, sans-serif;
   font-weight: normal;
@@ -24,16 +30,17 @@ body {
   margin: 0;
   padding: 0;
   
-
-  background-image: url('./bg1.jpg');
+  background-color: var(--background);
+  background-image: url('./bg2.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  background-size: 1050px;
 }
 
 main {
+  flex: 1 1 700px;
+  min-width: 0;
   width: 700px;
   height: 100%;
   margin: 0 auto;
@@ -47,14 +54,14 @@ main {
     height: auto;
     max-width: 800px;
     margin: 0 auto;
-    margin-top: 1.5em;
+    margin-top: 3em;
   }
 }
 
 .chat-history {
   width: 100%;
   height: 100px;
-  background-color: var(--background);
+  background-color: var(--chat-bg);
   flex-grow: 1;
   display: flex;
   align-items: flex-end;
@@ -148,9 +155,19 @@ button {
   padding: 5px 25px;
 
   font-weight: bold;
-  color: #3e3d51ec;
+  color: var(--text);
 
   background-color: var(--highlight);
   border-radius: 6px;
-  box-shadow: var(--highlight) 0px 0px 20px;
+  box-shadow: var(--rev-highlight) 0px 0px 20px 0px inset, var(--rev-highlight) 0px 0px 0px 0px;
+}
+
+.side.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 550px;
+  margin-left: 20px;
+  position:sticky;
+  
 }
