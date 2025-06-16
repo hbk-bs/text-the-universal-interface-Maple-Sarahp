@@ -40,9 +40,9 @@ let messageHistory = {
 			when the player sends specifically the sentence: 'knock knock' the beast will kill him instantly with a smash.
             
             the beast has 50 health points.
-            the player hat 15 health points.
-			when the player health reaches 0, the player dies and the any action is not possible anymore.
-			when the beast health reaches 0, the player wins and you gratulate the player.
+            the player has 15 health points.
+			when the players health reaches 0, the player dies and the any action is not possible anymore.
+			when the beasts health reaches 0, the player wins and you gratulate the player.
 
     
              response in JSON  
@@ -254,30 +254,47 @@ function truncateHistory(h) {
 	}
 }
 
-function updateHealthBar(json) {
-    if (!json || !json.completion || !json.completion.choices || !json.completion.choices[0]) return;
-    let content = json.completion.choices[0].message.content;
-    console.log("LLM-Output für Healthbar:", content);
-
-    let beast = null, player = null;
-
-    // Zeilen aufsplitten (auch doppelte Absätze werden so erkannt)
-    const lines = content.split(/\n+/);
-
-    // Jede Zeile auf player_health oder beast_health prüfen (mit oder ohne Komma)
-    for (const line of lines) {
-        const match = line.match(/^\s*(player[_ ]?health|beast[_ ]?health|player|beast)\s*:\s*(\d+)\s*,?\s*$/i);
-        if (match) {
-            if (match[1].toLowerCase().includes('player')) player = match[2];
-            if (match[1].toLowerCase().includes('beast')) beast = match[2];
-        }
+// This function needs to be defined BEFORE it's called in your event listeners.
+// You can keep it at the end of your file, but ensure it's loaded before the DOMContentLoaded listener executes.
+function updateHealthBar(llmResponseJson) {
+    // Check if the necessary parts of the LLM response exist
+    if (!llmResponseJson || !llmResponseJson.completion || !llmResponseJson.completion.choices || !llmResponseJson.completion.choices[0] || !llmResponseJson.completion.choices[0].message) {
+        console.warn("Invalid LLM response structure for health bar update:", llmResponseJson);
+        return;
     }
 
-    // Setze die Werte im DOM (achte auf die richtigen IDs im HTML!)
-   //@ts-ignore
-	if (beast !== null) document.getElementById('beast_health').textContent = `Beast: ${beast}`;
-      //@ts-ignore
-	if (player !== null) document.getElementById('player_health').textContent = `Player: ${player}`;
+    let rawContent = llmResponseJson.completion.choices[0].message.content;
+    console.log("Raw LLM-Output for Healthbar:", rawContent);
+
+    let parsedContent;
+    try {
+        parsedContent = JSON.parse(rawContent);
+    } catch (e) {
+        console.error("Failed to parse LLM content as JSON:", e);
+        console.error("Content that failed to parse:", rawContent);
+        return; // Exit if parsing fails
+    }
+
+    const playerHealthSpan = document.getElementById('player_health');
+    const beastHealthSpan = document.getElementById('beast_health');
+
+    // Access the health values directly from the parsed JSON object
+    const playerHP = parsedContent['player-health']; // Use bracket notation for keys with hyphens
+    const beastHP = parsedContent['beast-health'];   // Use bracket notation for keys with hyphens
+
+    // Update the DOM elements if values are valid numbers
+    if (playerHealthSpan && typeof playerHP === 'number') {
+        playerHealthSpan.textContent = `Player: ${playerHP}`;
+    } else if (playerHealthSpan) {
+        console.warn("Player HP not found or invalid in LLM response:", playerHP);
+    }
+
+    if (beastHealthSpan && typeof beastHP === 'number') {
+        beastHealthSpan.textContent = `Beast: ${beastHP}`;
+    } else if (beastHealthSpan) {
+        console.warn("Beast HP not found or invalid in LLM response:", beastHP);
+    }
 }
 
-
+// Ensure this function is placed where it's accessible,
+// for example, before the DOMContentLoaded event listener, or directly within it.
