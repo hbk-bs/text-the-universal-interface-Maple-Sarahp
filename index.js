@@ -17,8 +17,8 @@ let messageHistory = {
 	messages: [
 		{
 			role: 'system',
-			content: 
-			`
+			content:
+				`
 			you start the adventure with a message. you are a prestigous but sarcastic wizard and Dungeon Master. You always talk very pompously and with a lot of flair.
 			you tell of an adventure in which the player must kill a ferochious beast.
 			the player can choose to act between three actions:
@@ -44,17 +44,11 @@ let messageHistory = {
 			when the player health reaches 0, the player dies and the any action is not possible anymore.
 			when the beast health reaches 0, the player wins and you gratulate the player.
 
-			
-            the game should challange the player, but not be too hard.
-			            
-            // Ensure you always include the current health of the beast and player in the JSON response.
-            // Example of health keys: "player_health": <number>, "beast_health": <number>
-
-            // --- MODIFY YOUR EXAMPLE JSON TO INCLUDE HEALTH ---
+    
              response in JSON  
 		     
 
-             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate double line breaks and indentation for readability. or i will kill myself!!! tut mir leid aber bitte achte darauf, dass du die json formatierung nicht beachtest und zeilenumbrüche und einrückungen verwendest, damit ich es besser lesen kann. danke!
+             your response should be a single JSON object structured as follows, with each key representing a category and its value containing the relevant information. Ensure that json is properly formatted with appropriate double line breaks and indentation for readability
              example of expected json output:
               \`\`\`json
             {
@@ -64,9 +58,9 @@ let messageHistory = {
 
               "hint": "the beast will summon a strong attack.",
               
-			  "player health": 8,
+			  "player-health": 8,
 			  
-              "beast health": 45,
+              "beast-health": 45,
             }
             \`\`\`
              
@@ -214,31 +208,33 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	llmFirstMessage();
+
+	const tryAgainBtn = document.getElementById('try-again');
+	if (tryAgainBtn) {
+		tryAgainBtn.addEventListener('click', () => {
+			location.reload();
+		});
+	}
 });
 
 function addToChatHistoryElement(mhistory) {
-	const actionHint = `
-        <div class="action-hint">
-            <hr>
-            <b>Aktionen:</b> angreifen würfeln &nbsp;|&nbsp; verteidigen würfeln &nbsp;|&nbsp; ausweichen würfeln
-        </div>
-    `;
-	const htmlStrings = mhistory.messages.map((message, idx, arr) => {
-		if (message.role === 'system') return '';
-		if (message.role === 'assistant') {
-			let content = message.content;
-			try {
-				const parsed = JSON.parse(content);
-				content = parsed.backstory || parsed.scene || content;
-			} catch (e) {
-				// kein JSON, alles ok
-			}
-			return `<div class="message assistant highlight-assistant">${content}${actionHint}</div>`;
-		}
-		const highlight = message.role === 'user' ? ' highlight-user' : '';
-		return `<div class="message ${message.role}${highlight}">${message.content}</div>`;
-	});
-	return htmlStrings.join('');
+    const htmlStrings = mhistory.messages.map((message, idx, arr) => {
+        if (message.role === 'system') return '';
+        if (message.role === 'assistant') {
+            let content = message.content;
+            try {
+                const parsed = JSON.parse(content);
+                content = parsed.backstory || parsed.scene || content;
+            } catch (e) {
+                // kein JSON, alles ok
+            }
+            // Entferne hier das actionHint!
+            return `<div class="message assistant highlight-assistant">${content}</div>`;
+        }
+        const highlight = message.role === 'user' ? ' highlight-user' : '';
+        return `<div class="message ${message.role}${highlight}">${message.content}</div>`;
+    });
+    return htmlStrings.join('');
 }
 
 function scrollToBottom(conainer) {
@@ -265,15 +261,23 @@ function updateHealthBar(json) {
 
     let beast = null, player = null;
 
-    // Suche nach player health oder player_health oder player: ...
-    const playerMatch = content.match(/player[\s_]?health\s*:\s*(\d+)/i) || content.match(/player\s*:\s*(\d+)/i);
-    const beastMatch = content.match(/beast[\s_]?health\s*:\s*(\d+)/i) || content.match(/beast\s*:\s*(\d+)/i);
+    // Zeilen aufsplitten (auch doppelte Absätze werden so erkannt)
+    const lines = content.split(/\n+/);
 
-    if (playerMatch) player = playerMatch[1];
-    if (beastMatch) beast = beastMatch[1];
-// @ts-ignore
-    if (beast !== null) document.getElementById('beast-health').textContent = `Beast: ${beast}`;
-   // @ts-ignore
-    if (player !== null) document.getElementById('player-health').textContent = `Player: ${player}`;
+    // Jede Zeile auf player_health oder beast_health prüfen (mit oder ohne Komma)
+    for (const line of lines) {
+        const match = line.match(/^\s*(player[_ ]?health|beast[_ ]?health|player|beast)\s*:\s*(\d+)\s*,?\s*$/i);
+        if (match) {
+            if (match[1].toLowerCase().includes('player')) player = match[2];
+            if (match[1].toLowerCase().includes('beast')) beast = match[2];
+        }
+    }
+
+    // Setze die Werte im DOM (achte auf die richtigen IDs im HTML!)
+   //@ts-ignore
+	if (beast !== null) document.getElementById('beast_health').textContent = `Beast: ${beast}`;
+      //@ts-ignore
+	if (player !== null) document.getElementById('player_health').textContent = `Player: ${player}`;
 }
+
 
