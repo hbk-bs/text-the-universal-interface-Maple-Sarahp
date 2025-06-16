@@ -2,7 +2,7 @@
   --background: #4140955c;
   --chat-bg: #93a8d4;
   --highlight: #fde16f;
-  --rev-highlight: #4b2501;
+  --rev-highlight: #211000;
   --text: #3e3e3e;
   --text-highlight:#d7dbff;
   --atack: #f293aaa6;
@@ -23,6 +23,7 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: flex-start;
+  min-height: 100vh;
 
   height: 100%;
   font-family: system-ui, sans-serif;
@@ -71,8 +72,9 @@ main {
   gap: 16px;
   overflow-y: auto;
   padding: 20px;
-  border-radius: 8px;
-
+  margin-top: -15px;
+  margin-bottom: -15px;
+  border: 5px solid var(--text-highlight);
 }
 
 .chat-history>.message.assistant {
@@ -93,9 +95,10 @@ form {
 
 input[type='text'] {
   padding: 10px;
-  flex-grow: 1;
+  flex-grow: 10;
   height: 30px;
   border-radius: 0px 0px 0px 8px;
+  background-color: var(--highlight);
 }
 
 button {
@@ -145,7 +148,6 @@ button:hover{
   align-items: center;
 
   font-size: 1.3em;
-  margin-bottom: 10px;
   padding: 5px 25px;
 
   font-weight: bold;
@@ -160,7 +162,7 @@ button:hover{
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-top: 290px;
+  margin-top: 400px;
   margin-left: 20px;
   position: static;
 
@@ -177,19 +179,74 @@ button:hover{
   
 }
 
-#try-again {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 4em;
-  align-self: center;
-  padding: 3px;
+.try-again-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 500px; /* gleiche Höhe wie .side.buttons */
+  margin-right: 20px;
 }
+
+#try-again {
+  width: 80px;
+  height: 80px;
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+#try-again img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
 #try-again .try-again-label {
-  display: block;
-  font-size: 0.9em;
+  font-size: 1em;
+  margin-top: 4px;
   color: var(--text);
-  margin-bottom: 4px;
+  font-weight: bold;
   text-align: center;
-  font-weight:lighter;
-  letter-spacing: 0.3px;
+}
+
+@media (max-width: 600px) {
+  body {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .try-again-bar{
+    flex-direction: row;
+    justify-content: center;
+    align-items:center;
+    margin: 0px auto;
+   order:3;
+  }
+
+
+  .side.buttons {
+    flex-direction:row;
+    justify-content: center;
+    align-items:center;
+    margin: 0px auto;
+    margin-top: 30px;
+  }
+
+  .side.buttons {
+    order: 2;
+    width: 100%;
+    gap: 16px;
+    
+  }
+
+  main {
+    order: 1;
+    width: 100%;
+    height: auto;
+  }
 }
