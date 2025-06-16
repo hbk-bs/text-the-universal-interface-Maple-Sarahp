@@ -31,7 +31,7 @@ body {
   padding: 0;
   
   background-color: var(--background);
-  background-image: url('./bg2.jpg');
+  background-image: url('./bg3.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -101,19 +101,19 @@ button {
 #attack {
   background-color: var(--atack);
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 20px 10px;
 }
 
 #defend {
   background-color: var(--defend);
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 20px 10px;
 }
 
 #fireball {
   background-color: var(--fireball);
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 20px 10px;
 }
 
 #fireball.used {
@@ -150,7 +150,6 @@ button {
   align-items: center;
 
   font-size: 1.5em;
-  margin-top: 20px;
   margin-bottom: 10px;
   padding: 5px 25px;
 
